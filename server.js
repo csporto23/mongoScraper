@@ -2,8 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const handlebars = require("handlebars");
-var logger = require("morgan");
+const logger = require("morgan");
+const exphbs = require("express-handlebars");
+
+
+
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
@@ -11,10 +14,13 @@ mongoose.connect(MONGODB_URI);
 
 const db = require("./models");
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
+
 
 const app = express();
 
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 //logs and request
 app.use(logger("dev"));
@@ -22,8 +28,7 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 
 //public folder
-app.use(express.static("public"));
-
+app.use(express.static("views"));
 
 
 
